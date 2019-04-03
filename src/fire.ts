@@ -33,8 +33,8 @@ export class Fire extends PIXI.Container
                         "speed":{"start":1,"end":500},"startRotation":{"min":268,"max":271},"noRotation":true,"rotationSpeed":{"min":-10,"max":10},
                         "lifetime":{"min":0,"max":2},"blendMode":"normal","frequency":0.001,"emitterLifetime":-1,"maxParticles":10,"pos":{"x":0,"y":0},
                         "addAtBack":false,"spawnType":"circle","spawnCircle":{"x":0,"y":0,"r":5}};
-        var flameTexture:PIXI.Texture = PIXI.loader.resources["assets/flame.png"].texture;
-        var flameTexture2:PIXI.Texture = PIXI.loader.resources["assets/flame2.png"].texture;
+        var flameTexture:PIXI.Texture = PIXI.loader.resources["assets/Flame.png"].texture;
+        var flameTexture2:PIXI.Texture = PIXI.loader.resources["assets/Flame2.png"].texture;
         this.flameParticleEmitter = new Particles.Emitter(this, [flameTexture, flameTexture2], this.emitterData);
     }
 
