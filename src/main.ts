@@ -34,11 +34,6 @@ export class Main
     private startLoadingAssets(): void 
     {
         const loader = PIXI.loader;
-        // loader.add("assets/round_nodetailsOutline.json");
-        // loader.add("assets/flame.png");
-        // loader.add("assets/flame2.png");
-        // loader.add("assets/TorchHandle.png");
-        // loader.add("assets/GlitterCross.png");
         loader.add("assets/round_nodetailsOutline.json");
         loader.add("assets/Flame.png");
         loader.add("assets/Flame2.png");
