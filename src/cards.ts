@@ -10,6 +10,7 @@ export class Cards extends PIXI.display.Layer
     private app:PIXI.Application;
     private cardDimensions:PIXI.Rectangle;
     private allTweens:TWEEN.Tween[];
+    private cardStackY:number = 50;
 
     constructor(currentApp:PIXI.Application)
     {
@@ -52,7 +53,6 @@ export class Cards extends PIXI.display.Layer
             card.y = nextY;
             card.zOrder = i;
             card.parentGroup = this.sortingGroup;
-            card.parentLayer = this;
             this.addChild(card);
         }
     }
@@ -72,10 +72,12 @@ export class Cards extends PIXI.display.Layer
         temporaryTexture.lineStyle(2, 0x555555);
         temporaryTexture.drawRect(0, 0, this.cardDimensions.width, this.cardDimensions.height)
         temporaryTexture.endFill();
-        var txt:PIXI.Text = new PIXI.Text("" + index, {fill: textColor, fontSize: 18, align: "center"});
-        txt.x = (this.cardDimensions.width - txt.width)/2;
-        txt.y = (this.cardDimensions.height - txt.height)/2;
-        temporaryTexture.addChild(txt);
+        var topTxt:PIXI.Text = new PIXI.Text("" + index, {fill: textColor, fontSize: 18, align: "center"});
+        var botTxt:PIXI.Text = new PIXI.Text("" + index, {fill: textColor, fontSize: 18, align: "center"});
+        botTxt.x = (this.cardDimensions.width - botTxt.width);
+        botTxt.y = (this.cardDimensions.height - botTxt.height);
+        temporaryTexture.addChild(topTxt);
+        temporaryTexture.addChild(botTxt);
         card.addChild(temporaryTexture);
 
         return card;
@@ -102,7 +104,7 @@ export class Cards extends PIXI.display.Layer
         this.startFromBeginning();
 
         var xPos:number = 10;
-        var nextY = (this.app.screen.height/2) + (this.cardList.length*this.cardDimensions.height*0.2);
+        var nextY = this.cardStackY + (this.cardList.length*this.cardDimensions.height*0.2);
         var startingTween:boolean = false;
         for (var i = this.cardList.length - 1; i > -1; i--)
         {
@@ -111,7 +113,8 @@ export class Cards extends PIXI.display.Layer
             var tempTween2:TWEEN.Tween = new TWEEN.Tween(card).to({y:nextY}, 1000);
             if (!startingTween) {
                 startingTween = true;
-                tempTween2.onComplete(this.tweenCards)
+                //tempTween2.onComplete(this.tweenCards)
+                tempTween2.onComplete(()=>{this.tweenCard(this.cardList[0]);});
             }
             var tempTween:TWEEN.Tween = new TWEEN.Tween(card)
                 .to({x:xPos}, 1000)
@@ -120,16 +123,63 @@ export class Cards extends PIXI.display.Layer
 
             card.zOrder = i;
             card.parentGroup = this.sortingGroup;
-            card.parentLayer = this;
             this.addChild(card);
 
             nextY -= this.cardDimensions.height*0.2;
         }
     }
 
+    private tweenCard = (card:PIXI.Sprite) =>
+    {
+        var index:number = this.cardList.indexOf(card);
+        var originX:number = 10;
+        var originY = this.cardStackY + (this.cardList.length*this.cardDimensions.height*0.2);
+        
+        var travelTime:number = 2000;
+        var targetY:number = this.cardStackY;
+        var targetX:number = this.app.screen.width - (this.cardDimensions.width * 1.3);
+
+        for (var i = 0; i < this.cardList.length; i++)
+        {
+            if (i == index) { 
+                var tempTween:TWEEN.Tween = new TWEEN.Tween(card)
+                .to({x: targetX, y:targetY}, travelTime)
+                .onStart(()=> {
+                    this.bringToFront(card);
+                })
+                .onComplete(() => {
+                    if (index+1 != this.cardList.length) 
+                    {
+                        this.tweenCard(this.cardList[index+1]);
+                    }
+                })
+                .start();
+                this.allTweens.push(tempTween);
+                continue; 
+            }
+            var pickedCard:PIXI.Sprite = this.cardList[i];
+            
+            var miniTargetY:number = 0;
+            if (i < index)
+            {
+                miniTargetY = pickedCard.y + this.cardDimensions.height*0.2;
+            }
+            else if (i > index)
+            {
+                miniTargetY = pickedCard.y - this.cardDimensions.height*0.2;
+            }
+            
+            var tempTween:TWEEN.Tween = new TWEEN.Tween(pickedCard)
+            .to({y: miniTargetY}, travelTime/2)
+            .start();
+            this.allTweens.push(tempTween);
+        }
+    }
+
     private tweenCards = ():void =>
     {
-        var nextY = this.app.screen.height - this.cardDimensions.height;
+        var nextY:number = this.app.screen.height - this.cardDimensions.height;
+        var xPos:number = this.app.screen.width - (this.cardDimensions.width * 1.3);
         var lastTween:TWEEN.Tween;
         var startTween:TWEEN.Tween;
         for (var i = 0; i < this.cardList.length; i++)
@@ -144,7 +194,7 @@ export class Cards extends PIXI.display.Layer
             }
             this.allTweens.push(tempTween);
 
-            tempTween.to({x: 300, y:nextY}, 2000)
+            tempTween.to({x: xPos, y:nextY}, 2000)
                 .onStart(()=> {
                     this.bringToFront(card);
                 })

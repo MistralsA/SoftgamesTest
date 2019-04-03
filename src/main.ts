@@ -43,8 +43,8 @@ export class Main {
         this.game = new PIXI.Application({
             backgroundColor: 0x222222,
             // backgroundColor: 0xffff00,
-            height: 800,
-            width: 600
+            height: window.innerHeight,
+            width: window.innerWidth
         });
         this.game.stage = new PIXI.display.Stage();
 
@@ -65,7 +65,7 @@ export class Main {
         
         this.game.stage.addChild(this.menu);
         div.appendChild(this.game.view);
-        this.whenMenuChanged(1);
+        this.whenMenuChanged(0);
 
         this.animate();
     }
