@@ -21,6 +21,10 @@ export class Main
     private mixText:MixedText;  //The mixed text scene
     private fire:Fire;      //The fire scene
 
+    private cardReady:boolean;  //A boolean for waiting for the card scene to be done initializing
+    private textReady:boolean;  //A boolean for waiting for the mixed text scene to be done initializing
+    private fireReady:boolean;  //A boolean for waiting for the fire scene to be done initializing
+
     private headerContainer:HTMLElement; //The html component for the fps and credits
 
     constructor() 
@@ -62,24 +66,29 @@ export class Main
             width: window.innerWidth
         });
         this.game.stage = new PIXI.display.Stage();
+        
+        this.cardReady = false;
+        this.textReady = false;
+        this.fireReady = false;
 
         this.menu = new Menu();
         this.menu.whenMenuChanged = this.whenMenuChanged;   //A callback function for the menu for when the menu is changed
 
         this.cards = new Cards(this.game);
+        this.cards.cardsReady = this.waitForCards;  //A callback function for when the cards are ready
+        this.cards.initCards();
 
         this.mixText = new MixedText(this.game);
-        this.mixText.safeHeight = this.menu.getHeight();    //Giving a safe distance in the Y axis to prevent colliding with the menu
+        this.mixText.textReady = this.waitForText;  //A callback function for when the mixed text are ready
+        this.mixText.init({safeHeight:this.menu.getHeight()}); //Giving a safe distance in the Y axis to prevent colliding with the menu
 
         this.fire = new Fire(this.game);
+        this.fire.fireReady = this.waitForFire; //A callback function for when the fire is ready
+        this.fire.init();
         
-        window.onresize = this.onResize;
         
         this.game.stage.addChild(this.menu);
         div.appendChild(this.game.view);
-        this.whenMenuChanged(0);    //Sets it to cards scene
-
-        this.animate(0);
     }
 
     private animate(delta:number): void 
@@ -93,6 +102,44 @@ export class Main
 
         TWEEN.update(); //Updates tweens
         this.game.renderer.render(this.game.stage);
+    }
+
+    /**
+     * The attempts and waits are added for slower devices that require time to draw before animating
+     * Also for flexibility for future updates when more things must be created and added before
+     * the app starts
+     */
+    private waitForCards = ():void =>
+    {
+        this.cardReady = true;
+        this.cards.cardsReady = null;
+        this.attemptStart();
+    }
+
+    private waitForText = ():void =>
+    {
+        this.textReady = true;
+        this.mixText.textReady = null;
+        this.attemptStart();
+    }
+
+
+    private waitForFire = ():void =>
+    {
+        this.fireReady = true;
+        this.fire.fireReady = null;
+        this.attemptStart();
+    }
+
+    private attemptStart()
+    {
+        if (this.cardReady && this.textReady && this.fireReady)
+        {
+            window.onresize = this.onResize;    //Sets the listener for resizing
+            this.onResize();    //Makes sure everything looks good
+            this.animate(0);    //Begin animating
+            this.whenMenuChanged(0);    //Sets to cards scene
+        }
     }
 
     /**

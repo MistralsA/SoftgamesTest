@@ -16,6 +16,7 @@ export class Cards extends PIXI.display.Layer
     private cardDimensions:PIXI.Rectangle;  //Used for calculating positions
     private allTweens:TWEEN.Tween[];    //An array of all the tweens so they can be restarted
     private cardStackY:number = 75;     //The position of Y without colliding with anything
+    public cardsReady:Function;
 
     constructor(currentApp:PIXI.Application)
     {
@@ -28,13 +29,17 @@ export class Cards extends PIXI.display.Layer
 
         this.sortingGroup = new PIXI.display.Group(0, false);
         this.group.enableSort = true;
-
-        this.initCards();
     }
 
-    private initCards():void
+    public initCards():void
     {
         this.createCards();
+        this.arrangeCards();
+
+        if (this.cardsReady != null)
+        {
+            this.cardsReady();
+        }
     }
 
     /**
@@ -118,6 +123,7 @@ export class Cards extends PIXI.display.Layer
             this.allTweens[i].stop();
         }
         this.allTweens = [];
+        this.removeChildren();
     }
 
     /**
@@ -135,7 +141,7 @@ export class Cards extends PIXI.display.Layer
     public startAnimation():void
     {
         this.startFromBeginning();  //Moves it to the middle
-
+        
         //Tweens all cards from the middle to the side and creates a visible stack
         var xPos:number = 10;
         var nextY = this.cardStackY + (this.cardList.length*this.cardDimensions.height*0.2);
@@ -143,7 +149,6 @@ export class Cards extends PIXI.display.Layer
         for (var i = this.cardList.length - 1; i > -1; i--)
         {
             var card:PIXI.Sprite = this.cardList[i];
-            var obj:any = {x: xPos, y: nextY};
             var tempTween2:TWEEN.Tween = new TWEEN.Tween(card).to({y:nextY}, 1000);
             if (!startingTween) 
             {
@@ -203,7 +208,7 @@ export class Cards extends PIXI.display.Layer
                     {
                         var obj:any = {x:0};
                         var tTween:TWEEN.Tween = new TWEEN.Tween(obj)   //Delays the next card from flying out 
-                            .to({x:1}, 1000)
+                            .to({x:1}, travelTime/2)
                             .onComplete(() => 
                             {
                                 this.tweenCard(this.cardList[index+1]);

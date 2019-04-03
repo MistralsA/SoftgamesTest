@@ -7,6 +7,12 @@ import TWEEN from "@tweenjs/tween.js";
  * Started: April 2, 2019, 10:40AM EST
  * Due: April 4, 2019, 9AM EST/17:00 CET
  */
+
+interface MixedTextConfig 
+{
+    safeHeight:number;
+}
+
 export class MixedText extends PIXI.Container
 {
     private app:PIXI.Application;   //The pixi application
@@ -19,6 +25,7 @@ export class MixedText extends PIXI.Container
     private temporarySpace:DisplayObject;   //A placeholder for the " " text in size 18 font
 
     public safeHeight:number;   //The safe height to avoid crashing into the menu
+    public textReady:Function;
 
     constructor(currentApp:PIXI.Application) 
     {
@@ -35,6 +42,19 @@ export class MixedText extends PIXI.Container
         };
         
         this.temporarySpace = this.renderText(" ");
+    }
+
+    public init(config:MixedTextConfig)
+    {
+        if (config.safeHeight != null)
+        {
+            this.safeHeight = config.safeHeight;
+        }
+
+        if (this.textReady != null)
+        {
+            this.textReady();
+        }
     }
 
     /**

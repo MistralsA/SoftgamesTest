@@ -13,13 +13,23 @@ export class Fire extends PIXI.Container
     private flameParticleEmitter:Particles.Emitter; //The emitter
     private torchHandle:PIXI.Sprite;    //A sprite to give meaning to the fire
 
+    public fireReady:Function;
+
     constructor(currentApp:PIXI.Application)
     {
         super();
         this.app = currentApp;
+    }
 
+    public init()
+    {
         this.makeAssets();
         this.updatePosition();
+
+        if (this.fireReady != null)
+        {
+            this.fireReady();
+        }
     }
 
     private makeAssets():void
@@ -31,7 +41,7 @@ export class Fire extends PIXI.Container
                         "scale":{"list":[{"value":0.1,"time":0},{"value":0.25,"time":0.5},{"value":0.01,"time":1}],"isStepped":false},
                         "color":{"list":[{"value":"FF2200","time":0},{"value":"FF2200","time":0.35},{"value":"FFFF00","time":1}],"isStepped":false},
                         "speed":{"start":1,"end":500},"startRotation":{"min":268,"max":271},"noRotation":true,"rotationSpeed":{"min":-10,"max":10},
-                        "lifetime":{"min":0,"max":2},"blendMode":"normal","frequency":0.001,"emitterLifetime":-1,"maxParticles":10,"pos":{"x":0,"y":0},
+                        "lifetime":{"min":0,"max":2},"blendMode":"normal","frequency":0.001,"emitterLifetime":-1,"maxParticles":10,"pos":{"x":0,"y":200},
                         "addAtBack":false,"spawnType":"circle","spawnCircle":{"x":0,"y":0,"r":5}};
         var flameTexture:PIXI.Texture = PIXI.loader.resources["assets/Flame.png"].texture;
         var flameTexture2:PIXI.Texture = PIXI.loader.resources["assets/Flame2.png"].texture;
@@ -56,7 +66,7 @@ export class Fire extends PIXI.Container
     public updatePosition():void
     {
         var torchPosition:PIXI.Point = new PIXI.Point(this.app.screen.width*0.5, this.app.screen.height*0.6);
-        this.flameParticleEmitter.updateOwnerPos(torchPosition.x, torchPosition.y + 200);
+        this.flameParticleEmitter.updateOwnerPos(torchPosition.x, torchPosition.y);
         this.torchHandle.x = torchPosition.x- 25;
         this.torchHandle.y = torchPosition.y;
     }
