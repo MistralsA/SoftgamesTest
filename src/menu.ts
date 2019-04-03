@@ -8,7 +8,7 @@ export class Menu extends PIXI.Container
     private currentDropDownOption:number = 0;
     private dropDownOpened:Boolean = false;
     public whenMenuChanged:Function;
-
+    private calculatedHeight:number;
 
     constructor() {
         super();
@@ -88,6 +88,7 @@ export class Menu extends PIXI.Container
         this.displayBar.cursor = "pointer";
         
         this.displayBar.x = this.displayBar.y = 0;
+        this.calculatedHeight = nextY;
     }
 
     private assembleDropDown():void
@@ -181,5 +182,10 @@ export class Menu extends PIXI.Container
             }
         }
         return null;
+    }
+
+    public getHeight():number
+    {
+        return this.calculatedHeight
     }
 }

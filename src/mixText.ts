@@ -12,6 +12,8 @@ export class MixedText extends PIXI.Container
     private currentWords:DisplayObject[];
     private temporarySpace:DisplayObject;
 
+    public safeHeight:number;
+
     constructor(currentApp:PIXI.Application) {
         super();
         this.app = currentApp;
@@ -62,29 +64,43 @@ export class MixedText extends PIXI.Container
             "{{moose}}", "{{narwhal}}", "{{owl}}", "{{panda}}", "{{parrot}}", "{{penguin}}", "{{pig}}", "{{rabbit}}", "{{rhino}}", 
             "{{sloth}}", "{{snake}}", "{{walrus}}", "{{whale}}", "{{zebra}}"];
         
+        this.demoTripleAppend(randomString);
         var counter:any = {x: 0};
         this.autoAppendDelayer = new TWEEN.Tween(counter)
-            .to({x: 1}, 100)
+            .to({x: 1}, 2000)
             .onUpdate(() => {
                 if (counter.x == 1) 
                 {
                     counter.x = 0;
-                    this.textStyle.fontSize = 18 + (Math.floor(Math.random() * 100) % 40);
-                    var num:number = Math.floor((Math.random() * 100)) % randomString.length;
-                    this.append(randomString[num], true);
+                    this.demoTripleAppend(randomString);
                 }
             })
             .repeat(Infinity)
             .start();
     }
 
+    private demoTripleAppend(randomString:string[])
+    {
+        this.textStyle.fontSize = 18 + (Math.floor(Math.random() * 100) % 40);
+        var num1:number = Math.floor((Math.random() * 100)) % randomString.length;
+        this.append(randomString[num1]);
+        
+        this.textStyle.fontSize = 18 + (Math.floor(Math.random() * 100) % 40);
+        var num2:number = Math.floor((Math.random() * 100)) % randomString.length;
+        this.append(randomString[num2]);
+        
+        this.textStyle.fontSize = 18 + (Math.floor(Math.random() * 100) % 40);
+        var num3:number = Math.floor((Math.random() * 100)) % randomString.length;
+        this.append(randomString[num3], true);
+    }
+
     public append(str:string, immediateRender:boolean = false):void
     {
         this.currentString += str + " ";
+        this.parseText(str);
 
         if (immediateRender)
         {
-            this.parseText(str);
             this.render();
         }
     }
@@ -111,7 +127,7 @@ export class MixedText extends PIXI.Container
         var temporarySpaceBounds:Rectangle = this.temporarySpace.getBounds();
         var startX:number = 10;
         var nextX:number = startX;
-        var nextY:number = 40;
+        var nextY:number = this.safeHeight;
         var maxX:number = this.app.renderer.width - nextY;
         var highestY:number = 0;
         for (var i = 0; i < this.currentWords.length; i++)

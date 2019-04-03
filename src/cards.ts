@@ -10,7 +10,7 @@ export class Cards extends PIXI.display.Layer
     private app:PIXI.Application;
     private cardDimensions:PIXI.Rectangle;
     private allTweens:TWEEN.Tween[];
-    private cardStackY:number = 50;
+    private cardStackY:number = 75;
 
     constructor(currentApp:PIXI.Application)
     {
@@ -51,6 +51,7 @@ export class Cards extends PIXI.display.Layer
 
             card.x = xPos;
             card.y = nextY;
+            card.rotation = 0;
             card.zOrder = i;
             card.parentGroup = this.sortingGroup;
             this.addChild(card);
@@ -74,6 +75,7 @@ export class Cards extends PIXI.display.Layer
         temporaryTexture.endFill();
         var topTxt:PIXI.Text = new PIXI.Text("" + index, {fill: textColor, fontSize: 18, align: "center"});
         var botTxt:PIXI.Text = new PIXI.Text("" + index, {fill: textColor, fontSize: 18, align: "center"});
+        topTxt.x = 2;
         botTxt.x = (this.cardDimensions.width - botTxt.width);
         botTxt.y = (this.cardDimensions.height - botTxt.height);
         temporaryTexture.addChild(topTxt);
@@ -120,6 +122,9 @@ export class Cards extends PIXI.display.Layer
                 .to({x:xPos}, 1000)
                 .chain(tempTween2)
                 .start();
+            
+            this.allTweens.push(tempTween);
+            this.allTweens.push(tempTween2);
 
             card.zOrder = i;
             card.parentGroup = this.sortingGroup;
@@ -134,6 +139,8 @@ export class Cards extends PIXI.display.Layer
         var index:number = this.cardList.indexOf(card);
         var originX:number = 10;
         var originY = this.cardStackY + (this.cardList.length*this.cardDimensions.height*0.2);
+
+        var halfScreenPoint:PIXI.Point = new PIXI.Point(this.app.screen.width*0.6, this.app.screen.height*0.7);
         
         var travelTime:number = 2000;
         var targetY:number = this.cardStackY;
@@ -143,10 +150,11 @@ export class Cards extends PIXI.display.Layer
         {
             if (i == index) { 
                 var tempTween:TWEEN.Tween = new TWEEN.Tween(card)
-                .to({x: targetX, y:targetY}, travelTime)
+                .to({x: [halfScreenPoint.x, halfScreenPoint.x, targetX], y:[halfScreenPoint.y, targetY], rotation:[0, 0, Math.PI, 2*Math.PI]}, travelTime)
                 .onStart(()=> {
                     this.bringToFront(card);
                 })
+                .interpolation(TWEEN.Interpolation.Bezier)
                 .onComplete(() => {
                     if (index+1 != this.cardList.length) 
                     {
