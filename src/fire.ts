@@ -41,8 +41,8 @@ export class Fire extends PIXI.Container
                         "scale":{"list":[{"value":0.1,"time":0},{"value":0.25,"time":0.5},{"value":0.01,"time":1}],"isStepped":false},
                         "color":{"list":[{"value":"FF2200","time":0},{"value":"FF2200","time":0.35},{"value":"FFFF00","time":1}],"isStepped":false},
                         "speed":{"start":1,"end":500},"startRotation":{"min":268,"max":271},"noRotation":true,"rotationSpeed":{"min":-10,"max":10},
-                        "lifetime":{"min":0,"max":2},"blendMode":"normal","frequency":0.001,"emitterLifetime":-1,"maxParticles":10,"pos":{"x":0,"y":200},
-                        "addAtBack":false,"spawnType":"circle","spawnCircle":{"x":0,"y":0,"r":5}};
+                        "lifetime":{"min":0,"max":2},"blendMode":"normal","frequency":0.001,"emitterLifetime":-1,"maxParticles":10,"pos":{"x":0,"y":175},
+                        "addAtBack":false,"spawnType":"circle","spawnCircle":{"x":0,"y":0,"r":2}};
         var flameTexture:PIXI.Texture = PIXI.loader.resources["assets/Flame.png"].texture;
         var flameTexture2:PIXI.Texture = PIXI.loader.resources["assets/Flame2.png"].texture;
         this.flameParticleEmitter = new Particles.Emitter(this, [flameTexture, flameTexture2], this.emitterData);
