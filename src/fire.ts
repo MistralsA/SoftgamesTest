@@ -1,11 +1,17 @@
 import * as particles from 'pixi-particles';
 
+/**
+ * Programming demo test for Softgames
+ * Created by Sandra Koo
+ * Started: April 2, 2019, 10:40AM EST
+ * Due: April 4, 2019, 9AM EST/17:00 CET
+ */
 export class Fire extends PIXI.Container
 {
-    private emitterData:any;
-    private flameParticleEmitter:particles.Emitter;
-    private app:PIXI.Application;
-    private torchHandle:PIXI.Sprite;
+    private app:PIXI.Application;   //The pixi application
+    private emitterData:any;    //The configuration for the particle emitter
+    private flameParticleEmitter:particles.Emitter; //The emitter
+    private torchHandle:PIXI.Sprite;    //A sprite to give meaning to the fire
 
     constructor(currentApp:PIXI.Application)
     {
@@ -44,15 +50,22 @@ export class Fire extends PIXI.Container
         this.flameParticleEmitter.emit = false;
     }
 
+    /**
+     * Positions it so the emitter and the torch handle is at the center
+     */
     public updatePosition():void
     {
-        var torchPosition:PIXI.Point = new PIXI.Point(this.app.screen.width*0.4, this.app.screen.height*0.8);
-        this.flameParticleEmitter.updateOwnerPos(torchPosition.x, torchPosition.y);
+        var torchPosition:PIXI.Point = new PIXI.Point(this.app.screen.width*0.5, this.app.screen.height*0.6);
+        this.flameParticleEmitter.updateOwnerPos(torchPosition.x, torchPosition.y + 200);
         this.torchHandle.x = torchPosition.x- 25;
-        this.torchHandle.y = torchPosition.y- 200;
+        this.torchHandle.y = torchPosition.y;
     }
 
-    private emitterUpdate = (delta:number):void => {
+    /**
+     * Emitter's ticker update
+     */
+    private emitterUpdate = (delta:number):void => 
+    {
         this.flameParticleEmitter.update(delta);
     }
 }

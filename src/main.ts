@@ -5,22 +5,23 @@ import {Cards} from "./cards";
 import { MixedText } from "./mixText";
 import { Fire } from "./fire";
 
-
 /**
- * Todo:
- * Fancy tween for cards
+ * Programming demo test for Softgames
+ * Created by Sandra Koo
+ * Started: April 2, 2019, 10:40AM EST
+ * Due: April 4, 2019, 9AM EST/17:00 CET
  */
 export class Main 
 {
     private game:PIXI.Application;
 
-    private menu:Menu;
-    private cards:Cards;
-    private mixText:MixedText;
-    private fire:Fire;
-    private currentMenuSelection:number;
+    private menu:Menu;  //The drop down menu
+    private currentMenuSelection:number;    //Current menu selection
+    private cards:Cards;    //The cards scene
+    private mixText:MixedText;  //The mixed text scene
+    private fire:Fire;      //The fire scene
 
-    private headerContainer:HTMLElement;
+    private headerContainer:HTMLElement; //The html component for the fps and credits
 
     constructor() 
     {
@@ -37,6 +38,7 @@ export class Main
         loader.add("assets/flame.png");
         loader.add("assets/flame2.png");
         loader.add("assets/TorchHandle.png");
+        loader.add("assets/GlitterCross.png");
         loader.on("complete", () => 
         {
             this.onAssetsLoaded();
@@ -62,12 +64,12 @@ export class Main
         this.game.stage = new PIXI.display.Stage();
 
         this.menu = new Menu();
-        this.menu.whenMenuChanged = this.whenMenuChanged;
+        this.menu.whenMenuChanged = this.whenMenuChanged;   //A callback function for the menu for when the menu is changed
 
         this.cards = new Cards(this.game);
 
         this.mixText = new MixedText(this.game);
-        this.mixText.safeHeight = this.menu.getHeight();
+        this.mixText.safeHeight = this.menu.getHeight();    //Giving a safe distance in the Y axis to prevent colliding with the menu
 
         this.fire = new Fire(this.game);
         
@@ -75,7 +77,7 @@ export class Main
         
         this.game.stage.addChild(this.menu);
         div.appendChild(this.game.view);
-        this.whenMenuChanged(0);
+        this.whenMenuChanged(0);    //Sets it to cards scene
 
         this.animate(0);
     }
@@ -87,12 +89,15 @@ export class Main
             this.animate(del);
         });
 
-        this.updateFPS();
+        this.updateFPS();   //Updates the FPS
 
-        TWEEN.update();
+        TWEEN.update(); //Updates tweens
         this.game.renderer.render(this.game.stage);
     }
 
+    /**
+     * Clears the stage and stops the scenes
+     */
     private removeAll()
     {
         this.game.stage.removeChild(this.cards);
@@ -104,6 +109,9 @@ export class Main
         this.fire.stopFire();
     }
 
+    /**
+     * Adds the scene into the stage and starts its animation
+     */
     private whenMenuChanged = (index:number):void =>
     {
         this.removeAll();
@@ -138,9 +146,10 @@ export class Main
     private onResize = () => 
     {
         this.game.renderer.resize(window.innerWidth, window.innerHeight);
-        if (this.currentMenuSelection == 1) //mixed Text
+        switch (this.currentMenuSelection)
         {
-            this.mixText.render();
+            case 1: this.mixText.render();
+            case 2: this.fire.updatePosition();
         }
     }
 }
