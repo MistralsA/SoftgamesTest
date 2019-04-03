@@ -2,6 +2,8 @@
 
 Programming demo test for Softgames
 
+<a href="https://mistralsa.github.io/SoftgamesTest/index.html">Github preview</a>
+
 Created by Sandra Koo
 
 Started: April 2, 2019, 10:40AM EST
