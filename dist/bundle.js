@@ -47852,7 +47852,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var particles = __importStar(__webpack_require__(/*! pixi-particles */ "./node_modules/pixi-particles/lib/pixi-particles.es.js"));
+var Particles = __importStar(__webpack_require__(/*! pixi-particles */ "./node_modules/pixi-particles/lib/pixi-particles.es.js"));
 /**
  * Programming demo test for Softgames
  * Created by Sandra Koo
@@ -47885,7 +47885,7 @@ var Fire = /** @class */ (function (_super) {
             "addAtBack": false, "spawnType": "circle", "spawnCircle": { "x": 0, "y": 0, "r": 5 } };
         var flameTexture = PIXI.loader.resources["assets/flame.png"].texture;
         var flameTexture2 = PIXI.loader.resources["assets/flame2.png"].texture;
-        this.flameParticleEmitter = new particles.Emitter(this, [flameTexture, flameTexture2], this.emitterData);
+        this.flameParticleEmitter = new Particles.Emitter(this, [flameTexture, flameTexture2], this.emitterData);
     };
     Fire.prototype.startFire = function () {
         this.app.ticker.add(this.emitterUpdate);

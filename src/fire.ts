@@ -1,4 +1,4 @@
-import * as particles from 'pixi-particles';
+import * as Particles from 'pixi-particles';
 
 /**
  * Programming demo test for Softgames
@@ -10,7 +10,7 @@ export class Fire extends PIXI.Container
 {
     private app:PIXI.Application;   //The pixi application
     private emitterData:any;    //The configuration for the particle emitter
-    private flameParticleEmitter:particles.Emitter; //The emitter
+    private flameParticleEmitter:Particles.Emitter; //The emitter
     private torchHandle:PIXI.Sprite;    //A sprite to give meaning to the fire
 
     constructor(currentApp:PIXI.Application)
@@ -35,7 +35,7 @@ export class Fire extends PIXI.Container
                         "addAtBack":false,"spawnType":"circle","spawnCircle":{"x":0,"y":0,"r":5}};
         var flameTexture:PIXI.Texture = PIXI.loader.resources["assets/flame.png"].texture;
         var flameTexture2:PIXI.Texture = PIXI.loader.resources["assets/flame2.png"].texture;
-        this.flameParticleEmitter = new particles.Emitter(this, [flameTexture, flameTexture2], this.emitterData);
+        this.flameParticleEmitter = new Particles.Emitter(this, [flameTexture, flameTexture2], this.emitterData);
     }
 
     public startFire():void
